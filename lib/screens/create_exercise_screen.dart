@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+//import 'package:intl/intl.dart';
 import 'package:myroutine/config/routes/routes.dart';
 import 'package:myroutine/data/data.dart';
 import 'package:myroutine/providers/providers.dart';
@@ -40,12 +40,12 @@ class _CreateTaskScreenState extends ConsumerState<CreateExerciseScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               CommonTextField(
-                title: 'Exercise Title',
+                title: 'Exercise Title!!',
                 hintText: 'Exercise Title',
                 controller: _titleController,
               ),
