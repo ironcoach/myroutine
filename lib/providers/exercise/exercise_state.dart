@@ -6,7 +6,9 @@ import 'package:myroutine/data/models/models.dart';
 class ExerciseState extends Equatable {
   final List<Exercise> exercises;
 
-  const ExerciseState(this.exercises);
+  const ExerciseState(
+    this.exercises,
+  );
 
   const ExerciseState.initial({
     this.exercises = const [],
@@ -21,5 +23,7 @@ class ExerciseState extends Equatable {
   }
 
   @override
-  List<Object> get props => [exercises];
+  List<Object> get props => [
+        exercises,
+      ];
 }

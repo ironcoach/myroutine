@@ -19,18 +19,57 @@ class AppAlerts {
     ));
   }
 
-  static Future<void> showDeleteAlertDialog(
-      BuildContext context, WidgetRef ref, Task task) async {
+  static Future<void> showDeleteExercise(
+      BuildContext context, WidgetRef ref, int routineID) async {
     Widget cancelButton = TextButton(
       onPressed: () => context.pop(),
       child: const Text('No'),
     );
     Widget deleteButton = TextButton(
       onPressed: () async {
-        await ref.read(taskProvider.notifier).deleteTask(task).then((value) {
+        await ref
+            .read(exerciseProvider.notifier)
+            .deleteEx(routineID)
+            .then((value) {
           displaySnackBar(
             context,
-            'Task Deleted',
+            'Exercise Deleted',
+          );
+          context.pop();
+        });
+      },
+      child: const Text('YES'),
+    );
+    AlertDialog alert = AlertDialog(
+      title: const Text('Are you sure you want to delete?'),
+      actions: [
+        cancelButton,
+        deleteButton,
+      ],
+    );
+    await showDialog(
+      context: context,
+      builder: (ctx) {
+        return alert;
+      },
+    );
+  }
+
+  static Future<void> showDeleteRoutine(
+      BuildContext context, WidgetRef ref, Routine routine) async {
+    Widget cancelButton = TextButton(
+      onPressed: () => context.pop(),
+      child: const Text('No'),
+    );
+    Widget deleteButton = TextButton(
+      onPressed: () async {
+        await ref
+            .read(routinesProvider.notifier)
+            .deleteRoutine(routine)
+            .then((value) {
+          displaySnackBar(
+            context,
+            'Routine Deleted',
           );
           context.pop();
         });

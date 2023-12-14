@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart' show immutable;
 
 @immutable
-class TaskKeys {
-  const TaskKeys._();
+class TaskKeys111 {
+  const TaskKeys111._();
   static const String id = 'id';
   static const String title = 'title';
   static const String category = 'category';

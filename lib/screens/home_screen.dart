@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:myroutine/config/routes/routes.dart';
 import 'package:myroutine/data/data.dart';
 import 'package:myroutine/providers/providers.dart';
+import 'package:myroutine/screens/screens.dart';
 import 'package:myroutine/utils/utils.dart';
 import 'package:myroutine/widgets/widgets.dart';
 
@@ -21,16 +22,16 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colorScheme;
     final deviceSize = context.deviceSize;
-    final taskState = ref.watch(taskProvider);
-    final exState = ref.watch(exerciseProvider);
+    //final taskState = ref.watch(taskProvider);
+    //final exState = ref.watch(exerciseProvider);
+    final routineState = ref.watch(routinesProvider);
+    //final String myRecNum = ref.read(routinesProvider).routineID.toString();
+
     //final completedTasks = _completedTasks(taskState.tasks);
-    final inCompletedTasks = _inCompletedTasks(taskState.tasks);
-    print('exState length ${exState.exercises.length}');
+    //final inCompletedTasks = _inCompletedTasks(taskState.tasks);
+    //print('exState length ${exState.exercises.length}');
+
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.add),
-      ),
       body: Stack(
         children: [
           Column(
@@ -42,11 +43,7 @@ class HomeScreen extends ConsumerWidget {
                 child: const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    DisplayWhiteText(
-                      text: 'Oct 26, 2023',
-                      fontSize: 20,
-                      fontWeight: FontWeight.normal,
-                    ),
+                    //DisplayWhiteText(text: ' Num of recs $myRecNum'),
                     Gap(10),
                     DisplayWhiteText(
                       text: 'My Routines',
@@ -68,35 +65,47 @@ class HomeScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    DisplayListOfTasks(
-                      tasks: inCompletedTasks,
+                    DisplayListOfRoutines(
+                      routines: routineState.routines,
                     ),
                     const Gap(10),
-                    Text(
-                      'Steps',
-                      style: context.textTheme.headlineMedium,
+                    Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Image.asset(
+                        'assets/images/push-up.png',
+                        height: 200,
+                      ),
                     ),
-                    const Gap(10),
-                    DisplayListOfExercises(
-                      exercises: exState.exercises,
-                    ),
-                    const Gap(20),
+                    const Gap(0),
                     ElevatedButton(
-                      onPressed: () => context.push(RouteLocation.createTask),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CreateRoutineScreen(
+                                    action: "add",
+                                    title: "",
+                                    note: "",
+                                    id: 99999,
+                                  )),
+                        );
+
+                        // context.pushNamed(
+                        //   "createRoutine",
+                        //   pathParameters: {
+                        //     "action": "Add",
+                        //     "title": "title",
+                        //     "note": "note",
+                        //     "id": "99999",
+                        //   },
+                        // );
+                      },
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: DisplayWhiteText(text: 'Add Task'),
+                        child: DisplayWhiteText(text: 'Add Routine'),
                       ),
                     ),
                     const Gap(20),
-                    ElevatedButton(
-                      onPressed: () =>
-                          context.push(RouteLocation.createExercise),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: DisplayWhiteText(text: 'Add Exercise'),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -118,14 +127,14 @@ class HomeScreen extends ConsumerWidget {
   //   return filteredTasks;
   // }
 
-  List<Task> _inCompletedTasks(List<Task> tasks) {
-    final List<Task> filteredTasks = [];
-    for (var task in tasks) {
-      //print('Task Not Complete ${task.title} ${task.isCompleted}');
-      if (!task.isCompleted) {
-        filteredTasks.add(task);
-      }
-    }
-    return filteredTasks;
-  }
+  // List<Task> _inCompletedTasks(List<Task> tasks) {
+  //   final List<Task> filteredTasks = [];
+  //   for (var task in tasks) {
+  //     //print('Task Not Complete ${task.title} ${task.isCompleted}');
+  //     if (!task.isCompleted) {
+  //       filteredTasks.add(task);
+  //     }
+  //   }
+  //   return filteredTasks;
+  // }
 }

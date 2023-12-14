@@ -32,7 +32,12 @@ class ExerciseTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  exercise.title,
+                  exercise.title!,
+                  style: style.titleMedium,
+                ),
+                //Gap(5),
+                Text(
+                  "Exercise Type: ${exercise.repType}",
                   style: style.titleMedium,
                 ),
               ],

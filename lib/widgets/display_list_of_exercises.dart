@@ -1,9 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+//import 'package:go_router/go_router.dart';
 
 import 'package:myroutine/data/data.dart';
-import 'package:myroutine/providers/providers.dart';
+//import 'package:myroutine/providers/providers.dart';
+//import 'package:myroutine/screens/rep_screen.dart';
+import 'package:myroutine/screens/screens.dart';
 import 'package:myroutine/utils/utils.dart';
 import 'package:myroutine/widgets/widgets.dart';
 
@@ -18,17 +21,13 @@ class DisplayListOfExercises extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final deviceSize = context.deviceSize;
-    // final height =
-    //     isCompletedTasks ? deviceSize.height * 0.25 : deviceSize.height * 0.3;
-    final emptyExerciseMessage =
-        exercises.isEmpty ? 'No Exercises' : 'There are no tasks';
 
     return CommonContainer(
       height: deviceSize.height * 0.25,
       child: exercises.isEmpty
           ? Center(
               child: Text(
-                emptyExerciseMessage,
+                "No exercises yet",
                 style: context.textTheme.titleLarge,
               ),
             )
@@ -39,14 +38,23 @@ class DisplayListOfExercises extends ConsumerWidget {
               itemBuilder: (ctx, index) {
                 final exercise = exercises[index];
                 return InkWell(
-                  onTap: () {},
-                  // onTap: () async {
-                  //   await showModalBottomSheet(
-                  //       context: context,
-                  //       builder: (ctx) {
-                  //         return TaskDetails(task: task);
-                  //       });
-                  // },
+                  onTap: () {
+                    //
+                    // This is for Editing the exercise
+                    //
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CreateExerciseScreen(
+                          exercise: exercise,
+                          action: "Edit",
+                        ),
+                      ),
+                    );
+                  },
+                  onLongPress: () {
+                    AppAlerts.showDeleteExercise(context, ref, exercise.id!);
+                  },
                   child: ExerciseTile(
                     exercise: exercise,
                   ),

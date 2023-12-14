@@ -11,14 +11,22 @@ final appRoutes = [
     parentNavigatorKey: navigationKey,
     builder: HomeScreen.builder,
   ),
-  GoRoute(
-    path: RouteLocation.createTask,
-    parentNavigatorKey: navigationKey,
-    builder: CreateTaskScreen.builder,
-  ),
-  GoRoute(
-    path: RouteLocation.createExercise,
-    parentNavigatorKey: navigationKey,
-    builder: CreateExerciseScreen.builder,
-  ),
+  // GoRoute(
+  //   name: "createEx",
+  //   path: RouteLocation.createExercise,
+  //   parentNavigatorKey: navigationKey,
+  //   builder: (context, state) => CreateExerciseScreen(
+  //     routineID: state.pathParameters["routineid"]!,
+  //   ),
+  // ),
+  // GoRoute(
+  //   name: "createRoutine",
+  //   path: RouteLocation.createRoutine,
+  //   parentNavigatorKey: navigationKey,
+  //   builder: (context, state) => CreateRoutineScreen(
+  //       action: state.pathParameters["action"]!,
+  //       title: state.pathParameters["title"]!,
+  //       note: state.pathParameters["note"]!,
+  //       id: state.pathParameters["id"]!),
+  // ),
 ];

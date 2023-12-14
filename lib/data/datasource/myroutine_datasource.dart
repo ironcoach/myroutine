@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:myroutine/data/data.dart';
+import 'package:myroutine/providers/providers.dart';
+//import 'package:myroutine/data/models/routines.dart';
 import 'package:myroutine/utils/utils.dart';
 //import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
@@ -38,69 +41,60 @@ class TaskDatasource {
 
   void _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE ${DBKeys.dbTable} (
-        ${TaskKeys.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-        ${TaskKeys.title} TEXT,
-        ${TaskKeys.note} TEXT,
-        ${TaskKeys.date} TEXT,
-        ${TaskKeys.time} TEXT,
-        ${TaskKeys.category} TEXT,
-        ${TaskKeys.isCompleted} INTEGER
-      )
-    ''');
-    await db.execute('''
-      CREATE TABLE ExTable (
+      CREATE TABLE ${DBKeys.dbExercisesTable} (
         ${ExKeys.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-        ${ExKeys.title} TEXT
+        ${ExKeys.routineID} INTEGER,
+        ${ExKeys.title} TEXT,
+        ${ExKeys.workTime} INTEGER,
+        ${ExKeys.restTime} INTEGER,
+        ${ExKeys.repType} INTEGER,
+        ${ExKeys.repCount} INTEGER,
+        ${ExKeys.orderNum} INTEGER,
+        ${ExKeys.setCount} INTEGER
       )
     ''');
-  }
 
-  Future<int> addTask(Task task) async {
-    final db = await database;
-    return db.transaction((txn) async {
-      return await txn.insert(
-        DBKeys.dbTable,
-        task.toJson(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    });
+    await db.execute('''
+      CREATE TABLE ${DBKeys.dbRoutineTable} (
+        ${RoutineKeys.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+        ${RoutineKeys.title} TEXT,
+        ${RoutineKeys.note} TEXT
+      )
+    ''');
   }
 
   Future<int> addExercise(Exercise exercise) async {
     final db = await database;
-    print('add exercise Datasource');
     return db.transaction((txn) async {
       return await txn.insert(
-        'ExTable',
+        DBKeys.dbExercisesTable,
         exercise.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     });
   }
 
-  Future<List<Task>> getAllTasks() async {
+  Future<int> addRoutine(Routine routine, WidgetRef ref) async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      DBKeys.dbTable,
-      orderBy: "id DESC",
-    );
-    return List.generate(
-      maps.length,
-      (index) {
-        return Task.fromJson(maps[index]);
-      },
-    );
+    return db.transaction((txn) async {
+      var myReturn = await txn.insert(
+        DBKeys.dbRoutineTable,
+        routine.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      ref.read(routinesProvider).routineID = myReturn;
+      return myReturn;
+    });
   }
 
   Future<List<Exercise>> getAllExercises() async {
     final db = await database;
-    //print('Get all Exercises Datasource');
+
     final List<Map<String, dynamic>> maps = await db.query(
-      'ExTable',
-      orderBy: "id",
+      DBKeys.dbExercisesTable,
+      orderBy: "ordernum",
     );
-    print('Get all Exercises Map length ${maps.length}');
+    //print('Get all Exercises Map length ${maps.length}');
     return List.generate(
       maps.length,
       (index) {
@@ -109,23 +103,27 @@ class TaskDatasource {
     );
   }
 
-  Future<int> updateTask(Task task) async {
+  Future<List<Routine>> getAllRoutines() async {
     final db = await database;
-    return db.transaction((txn) async {
-      return await txn.update(
-        DBKeys.dbTable,
-        task.toJson(),
-        where: 'id = ?',
-        whereArgs: [task.id],
-      );
-    });
+    //print('Get all Exercises Datasource');
+    final List<Map<String, dynamic>> maps = await db.query(
+      DBKeys.dbRoutineTable,
+      orderBy: "id",
+    );
+    //print('Get all Exercises Map length ${maps.length}');
+    return List.generate(
+      maps.length,
+      (index) {
+        return Routine.fromJson(maps[index]);
+      },
+    );
   }
 
   Future<int> updateExercise(Exercise exercise) async {
     final db = await database;
     return db.transaction((txn) async {
       return await txn.update(
-        'ExTable',
+        DBKeys.dbExercisesTable,
         exercise.toJson(),
         where: 'id = ?',
         whereArgs: [exercise.id],
@@ -133,27 +131,49 @@ class TaskDatasource {
     });
   }
 
-  Future<int> deleteTask(Task task) async {
+  Future<int> linkExercise(int routineID) async {
+    final db = await database;
+
+    int numRecs = await db.rawUpdate(
+        'UPDATE ${DBKeys.dbExercisesTable} SET routineid = "$routineID" WHERE routineid >= 95000');
+    //print("Number records modified $numRecs");
+
+    return numRecs;
+  }
+
+  Future<int> updateRoutine(Routine routine) async {
+    final db = await database;
+    return db.transaction((txn) async {
+      return await txn.update(
+        DBKeys.dbRoutineTable,
+        routine.toJson(),
+        where: 'id = ?',
+        whereArgs: [routine.id],
+      );
+    });
+  }
+
+  Future<int> deleteExercise(int exID) async {
     final db = await database;
     return db.transaction(
       (txn) async {
         return await txn.delete(
-          DBKeys.dbTable,
-          where: 'id = ?',
-          whereArgs: [task.id],
+          DBKeys.dbExercisesTable,
+          where: '${ExKeys.id} = ?',
+          whereArgs: [exID],
         );
       },
     );
   }
 
-  Future<int> deleteExercise(Exercise exercise) async {
+  Future<int> deleteRoutine(Routine routine) async {
     final db = await database;
     return db.transaction(
       (txn) async {
         return await txn.delete(
-          'ExTable',
+          DBKeys.dbRoutineTable,
           where: 'id = ?',
-          whereArgs: [exercise.id],
+          whereArgs: [routine.id],
         );
       },
     );

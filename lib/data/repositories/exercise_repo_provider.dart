@@ -3,5 +3,6 @@ import 'package:myroutine/data/data.dart';
 
 final exerciseRepositoryProvider = Provider<ExerciseRepository>((ref) {
   final datasource = ref.watch(taskDatasourceProvider);
+
   return ExerciseRepositoryImpl(datasource);
 });

@@ -15,9 +15,9 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
   }
 
   @override
-  Future<void> deleteEx(Exercise exercise) async {
+  Future<void> deleteEx(int exID) async {
     try {
-      await _datasource.deleteExercise(exercise);
+      await _datasource.deleteExercise(exID);
     } catch (e) {
       throw '$e';
     }
@@ -25,7 +25,7 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
 
   @override
   Future<List<Exercise>> getAllExercises() async {
-    print('Get all Exercises repo implementation');
+    //print('Get all Exercises repo implementation');
     try {
       return await _datasource.getAllExercises();
     } catch (e) {
@@ -37,6 +37,15 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
   Future<void> updateEx(Exercise exercise) async {
     try {
       await _datasource.updateExercise(exercise);
+    } catch (e) {
+      throw '$e';
+    }
+  }
+
+  @override
+  Future<void> linkEx(int routineID) async {
+    try {
+      await _datasource.linkExercise(routineID);
     } catch (e) {
       throw '$e';
     }
